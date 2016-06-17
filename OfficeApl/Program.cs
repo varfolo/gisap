@@ -15,62 +15,33 @@ using System.Runtime.InteropServices;
 using Npgsql;
 namespace OfficeApl
 {
-    public class DataToBase
-    {
-        string connectionString = "Server=127.0.0.1;Port=5432;User Id=postgres;Password=supervisor;Database=gisdb;";
-        private NpgsqlConnection getConnection(String conString){  
-            NpgsqlConnection conn = new NpgsqlConnection(conString);
-            return conn;
-        }
-
-        public static void saveDataToBase(NpgsqlConnection conn, NpgsqlCommand comm)
-        {
-            // string sql = "insert into rawdata (id, polygon, clss) values ("+arr[1,1]+", "+arr[1,3]+", 'fff');";
-            try
-            {
-                if (conn.State.ToString().ToLower() == "open")
-                {
-
-
-                    Console.WriteLine(conn.State);
-                    Console.WriteLine("закрываем соединение");
-                    Console.ReadLine();
-                    conn.Close(); //Закрываем соединение.
-                    Console.WriteLine(conn.State);
-                    Console.ReadLine();
-                    comm.Connection = conn;
-                    //comm.CommandText = sql;
-                    //comm.ExecuteNonQuery();//.ExecuteScalar().ToString(); //Выполняем нашу команду.
-                    //comm.Dispose();
-
-                }
-                else //(getCon.State.ToString().ToLower() == "closed")
-                {
-                    Console.WriteLine(conn.State);
-                    Console.WriteLine("открываем соединение");
-                    Console.ReadLine();
-                    conn.Open(); //Открываем соединение.
-                    Console.WriteLine(conn.State);
-                    Console.ReadLine();
-
-                }
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show("Ошибка подключения к БД "+ex.Message);
-                Console.WriteLine(ex.Message);
-                Console.ReadLine();
-                conn.Close(); //Закрываем соединение.
-            }
-
-
-        }
-
-    }
     class Program
     {
 
-
+        //public static NpgsqlConnection getConnection(String todocon)
+        ////{
+        ////    string connectionString = "Server=127.0.0.1;Port=5432;User Id=postgres;Password=supervisor;Database=gisdb;";
+        ////    NpgsqlConnection conn = new NpgsqlConnection(connectionString);
+        ////    try
+        ////    {
+        ////        if (todocon.ToLower().ToString() == "open")
+        ////        {
+        ////            conn.Open();    //открываем соединение
+        ////            return conn;
+        ////        }
+        ////        else
+        ////        {
+        ////            conn.Close();   //закрываем соединение
+        ////            return conn;
+        ////        }
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        Console.WriteLine(ex.Message);
+        ////        Console.ReadLine();
+        ////        return conn;
+        ////    }
+        ////}
 
         public static void loadPostgres(object[,] arr, NpgsqlConnection conn)
         {
@@ -96,14 +67,33 @@ namespace OfficeApl
             return list;
         }
 
+        private static void fillGeoTable(NpgsqlConnection conn)
+        {
+            NpgsqlCommand command = new NpgsqlCommand();
 
+            String sqlcom = "SELECT*FROM rawdata;";
+            System.Data.DataTable dt = new System.Data.DataTable();
+            NpgsqlDataAdapter da = new NpgsqlDataAdapter(sqlcom, conn);
+            da.Fill(dt);
+            System.Data.DataTableReader tablereader = dt.CreateDataReader();
+            while (tablereader.Read())
+            {
+                Object id = tablereader.GetValue(0); ;
+                Console.WriteLine(System.Int16.Parse(id.ToString()));
+                Console.ReadLine();
+
+            }
+
+        }
         static void Main(string[] args)
         {
-        string connectionString = "Server=127.0.0.1;Port=5432;User Id=postgres;Password=supervisor;Database=gisdb;";
-        NpgsqlConnection conn = new NpgsqlConnection(connectionString);
-        conn.Open();
-        NpgsqlCommand comm = new NpgsqlCommand();
-        comm.Connection = conn;
+            string connectionString = "Server=127.0.0.1;Port=5432;User Id=postgres;Password=supervisor;Database=gisdb;";
+            NpgsqlConnection conn = new NpgsqlConnection(connectionString);
+            conn.Open();
+            NpgsqlCommand comm = new NpgsqlCommand();
+            comm.Connection = conn;
+
+            fillGeoTable(conn);
 
 
 
@@ -169,7 +159,7 @@ namespace OfficeApl
                         }
                         //SaveDataToBase(valarr);
 
-                        }
+                    }
                 }
         }
         finally
