@@ -74,11 +74,6 @@ namespace OfficeApl
 
         public static void loadPostgres(object[,] arr, NpgsqlConnection conn)
         {
-            //getConnection("open");
-
-
-
-
 
         }
         private static object[,] loadCellByCell(int row, int maxColNum, _Worksheet osheet)
