@@ -70,7 +70,8 @@ namespace OfficeApl
         private static void fillGeoTable(NpgsqlConnection conn)
         {
             NpgsqlCommand command = new NpgsqlCommand();
-
+            command.Connection = conn;
+            //String sqlcomfill = "insert into test (id) values (1);";
             String sqlcom = "SELECT*FROM rawdata;";
             System.Data.DataTable dt = new System.Data.DataTable();
             NpgsqlDataAdapter da = new NpgsqlDataAdapter(sqlcom, conn);
@@ -80,8 +81,9 @@ namespace OfficeApl
             {
                 Object id = tablereader.GetValue(0); ;
                 Console.WriteLine(System.Int16.Parse(id.ToString()));
+                command.CommandText = "insert into test (id) values (" +System.Int16.Parse(id.ToString())+ ");";
+                command.ExecuteNonQuery();
                 Console.ReadLine();
-
             }
 
         }
